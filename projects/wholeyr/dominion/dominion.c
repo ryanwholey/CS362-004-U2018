@@ -655,20 +655,20 @@ int doAdventurerEffect(int currentPlayer, struct gameState *state) {
   int cardDrawn;
 
   while (drawntreasure < 2) {
+    drawCard(currentPlayer, state);
+
     //if the deck is empty we need to shuffle discard and add to deck
     if (state->deckCount[currentPlayer] < 1) {
       shuffle(currentPlayer, state);
     }
-    drawCard(currentPlayer, state);
     //top card of hand is most recently drawn card.
     cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer] - 1];
     if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold) {
       drawntreasure++;
     } else {
-      temphand[z] = cardDrawn;
+      temphand[++z] = cardDrawn;
       // this should just remove the top card (the most recently drawn one).
       state->handCount[currentPlayer]--;
-      z++;
     }
   }
 
@@ -690,7 +690,7 @@ int doSmithyEffect(int handPos, int currentPlayer, struct gameState *state) {
   int i;
 
   // +3 Cards
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i <= 3; i++) {
     drawCard(currentPlayer, state);
   }
 
@@ -718,9 +718,7 @@ int doCouncilRoomEffect(int handPos, int currentPlayer, struct gameState *state)
 
   //Each other player draws a card
   for (i = 0; i < state->numPlayers; i++) {
-    if (i != currentPlayer) {
-      drawCard(i, state);
-    }
+    drawCard(i, state);
   }
 
   //put played card in played card pile
@@ -742,7 +740,7 @@ int doVillageEffect(int handPos, int currentPlayer, struct gameState *state) {
   state->numActions = state->numActions + 2;
 
   //discard played card from hand
-  discardCard(handPos, currentPlayer, state, 0);
+  discardCard(currentPlayer, handPos, state, 0);
 
   return 0;
 }
