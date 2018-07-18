@@ -8,6 +8,14 @@
 #define DEBUG 0
 #define NOISY_TEST 1
 
+void assertTrue(assertion) {
+  if (assertion) {
+    printf("PASS\n");
+  } else {
+    printf("FAIL\n");
+  }
+}
+
 int main () {
   // SETUP
   printf("SUITE: whoseTurn\n");
@@ -19,11 +27,7 @@ int main () {
   state->whoseTurn = player;
   int result = whoseTurn(state);
 
-  if (result == player) {
-    printf("PASS\n");
-  } else {
-    printf("FAIL\n");
-  }
+  assertTrue(result == player);
 
   // CLEANUP
   free(state);

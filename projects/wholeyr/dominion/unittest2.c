@@ -80,7 +80,6 @@ int main() {
 
   assertTrue(result);
 
-
   // CLEANUP
   free(state);
 }

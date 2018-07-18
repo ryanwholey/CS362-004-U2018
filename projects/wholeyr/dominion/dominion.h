@@ -130,4 +130,6 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state);
 
 // int updateCoins(int player, struct gameState *state, int bonus);
 
+void printGameState(struct gameState *state);
+
 #endif

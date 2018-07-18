@@ -18,6 +18,96 @@ struct gameState* newGame() {
   return g;
 }
 
+void printGameState(struct gameState *state) {
+  printf("############################################\n");
+  int i, j;
+  printf("NUM PLAYERS: %d\n", state->numPlayers);
+
+  printf("SUPPLY COUNT: \n");
+  i = 0;
+  while (state->supplyCount[i] > 0) {
+    printf("  %d) %d\n", i, state->supplyCount[i]);
+    i = i + 1;
+  }
+
+  printf("EMBARGO TOKENS: \n");
+  i = 0;
+  while (state->embargoTokens[i] > 0) {
+    printf("  %d) %d\n", i, state->embargoTokens[i]);
+    i = i + 1;
+  }
+  if (i == 0) {
+    printf("  None\n");
+  }
+
+  printf("OUTPOST PLAYED: %d\n", state->outpostPlayed);
+  printf("OUTPOST TURN: %d\n", state->outpostTurn);
+  printf("WHOSE TURN: %d\n", state->whoseTurn);
+  printf("PHASE: %d\n", state->phase);
+  printf("NUM ACTIONS: %d\n", state->numActions);
+  printf("COINS: %d\n", state->coins);
+  printf("NUM BUYS: %d\n", state->numBuys);
+
+  printf("HAND: \n");
+  for (i = 0; i < state->numPlayers; i++) {
+    printf("  PLAYER %d\n", i);
+    for (j = 0; j < state->handCount[i]; j++) {
+      printf("    %d) %d\n", j, state->hand[i][j]);
+    }
+  }
+
+  printf("HAND COUNT: \n");
+  for (i = 0; i < state->numPlayers; i++) {
+    printf("  PLAYER %i: %i\n", i, state->handCount[i]);
+  }
+
+  printf("DECK: \n");
+  for (i = 0; i < state->numPlayers; i++) {
+    printf("  PLAYER %d\n", i);
+    j = 0;
+    while (state->deck[i][j] != 0) {
+      printf("    %i) %i\n", j, state->deck[i][j]);
+      j++;
+    }
+  }
+
+  printf("DECK COUNT: \n");
+  for (i = 0; i < state->numPlayers; i++) {
+    printf("  PLAYER %i: %i\n", i, state->deckCount[i]);
+  }
+
+  printf("DISCARD: \n");
+  for (i = 0; i < state->numPlayers; i++) {
+    printf("  PLAYER %i:\n");
+    j = 0;
+    while (state->discard[i][j] != 0) {
+      printf("    %i) %i\n", j, state->discard[i][j]);
+      j++;
+    }
+    if (j == 0) {
+      printf("    none\n");
+    }
+  }
+
+  printf("DISCARD COUNT:\n");
+  for (i = 0; i < state->numPlayers; i++) {
+    printf("  PLAYER %i: %i\n", i, state->discardCount[i]);
+  }
+
+  printf("PLAYED CARDS:\n");
+  i = 0;
+  while (state->playedCards[i] != 0) {
+    printf("%i) %i\n", i, state->playedCards[i]);
+  }
+  if (i == 0) {
+    printf("  none\n");
+  }
+
+  printf("PLAYED CARD COUNT: %i\n", state->playedCardCount);
+
+  printf("############################################\n");
+}
+
 int* kingdomCards(int k1, int k2, int k3, int k4, int k5, int k6, int k7,
 		  int k8, int k9, int k10) {
   int* k = malloc(10 * sizeof(int));
@@ -33,6 +123,7 @@ int* kingdomCards(int k1, int k2, int k3, int k4, int k5, int k6, int k7,
   k[9] = k10;
   return k;
 }
+
 
 int initializeGame(int numPlayers, int kingdomCards[10], int randomSeed,
 		   struct gameState *state) {
