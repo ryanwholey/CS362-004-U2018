@@ -32,9 +32,7 @@ int main() {
   int result;
   int oldValue;
   initializeGame(2, k, 1, state);
-
-  printGameState(state);
-
+  int player = state->whoseTurn;
   // ASSERTIONS
 
   printf("* Should return -1 when player does not have enough buys: ");
@@ -60,6 +58,23 @@ int main() {
 
   assertTrue(result == -1);
   state->coins = oldValue;
+
+  // purchase finally goes through
+  buyCard(silver, state);
+  printf("* Should add a silver to player's discard: ");
+  assertTrue(
+    state->discard[player][0] == silver
+    && state->discardCount[player] == 1
+  );
+
+  printf("* Should reduce num buys by 1: ");
+  assertTrue(state->numBuys == 0);
+
+  printf("* Should reduce coins by cost of silver (4): ");
+  assertTrue(state->coins == 1);
+
+  printf("* Should reduce supplyCount for silver by 1: ");
+  assertTrue(state->supplyCount[silver] == 39);
 
   // CLEANUP
   free(state);
