@@ -132,4 +132,6 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state);
 
 void printGameState(struct gameState *state);
 
+int DoAdventurerEffect(int handPos, int currentPlayer, struct gameState *state);
+
 #endif

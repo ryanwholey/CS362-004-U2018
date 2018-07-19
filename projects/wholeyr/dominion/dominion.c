@@ -64,10 +64,8 @@ void PrintGameState(struct gameState *state) {
   printf("DECK: \n");
   for (i = 0; i < state->numPlayers; i++) {
     printf("  PLAYER %d\n", i);
-    j = 0;
-    while (state->deck[i][j] != 0) {
+    for (j = 0; j < state->deckCount[i]; j++) {
       printf("    %i) %i\n", j, state->deck[i][j]);
-      j++;
     }
   }
 
@@ -79,11 +77,10 @@ void PrintGameState(struct gameState *state) {
   printf("DISCARD: \n");
   for (i = 0; i < state->numPlayers; i++) {
     printf("  PLAYER %i:\n", i);
-    j = 0;
-    while (state->discard[i][j] != 0) {
+    for (j = 0; j < state->discardCount[i]; j++) {
       printf("    %i) %i\n", j, state->discard[i][j]);
-      j++;
     }
+
     if (j == 0) {
       printf("    none\n");
     }
@@ -96,7 +93,7 @@ void PrintGameState(struct gameState *state) {
 
   printf("PLAYED CARDS:\n");
   i = 0;
-  while (state->playedCards[i] != 0) {
+  for (j = 0; j < state->playedCardCount; j++) {
     printf("%i) %i\n", i, state->playedCards[i]);
   }
   if (i == 0) {
@@ -734,11 +731,23 @@ int getCost(int cardNumber)
  * Given a player id and a game state, this function will act out the effect of that player
  * using an adventurer card
  */
-int doAdventurerEffect(int currentPlayer, struct gameState *state) {
-  int z = 0;
+int DoAdventurerEffect(int handPos, int currentPlayer, struct gameState *state) {
+  int i, z = 0;
   int drawntreasure = 0;
   int temphand[MAX_HAND];
   int cardDrawn;
+
+  int found = 0;
+  for (i = 0; i < state->handCount[currentPlayer]; i++) {
+    if (state->hand[currentPlayer][i] == adventurer) {
+      found = 1;
+      break;
+    }
+  }
+
+  if (!found) {
+    return -1;
+  }
 
   while (drawntreasure < 2) {
     drawCard(currentPlayer, state);
@@ -752,7 +761,7 @@ int doAdventurerEffect(int currentPlayer, struct gameState *state) {
     if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold) {
       drawntreasure++;
     } else {
-      temphand[++z] = cardDrawn;
+      temphand[z++] = cardDrawn;
       // this should just remove the top card (the most recently drawn one).
       state->handCount[currentPlayer]--;
     }
@@ -761,8 +770,13 @@ int doAdventurerEffect(int currentPlayer, struct gameState *state) {
   while (z - 1 >= 0) {
     // discard all cards in play that have been drawn
     state->discard[currentPlayer][state->discardCount[currentPlayer]++] = temphand[z - 1];
+    // state->discard[currentPlayer][state->discardCount[currentPlayer]++] = temphand[z - 1];
     z = z - 1;
   }
+
+  discardCard(handPos, currentPlayer, state, 0);
+
+  updateCoins(currentPlayer, state, 0);
 
   return 0;
 }
@@ -926,7 +940,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   //uses switch to select card and perform actions
   switch (card) {
     case adventurer:
-      return doAdventurerEffect(currentPlayer, state);
+      return DoAdventurerEffect(handPos, currentPlayer, state);
 
     case council_room:
       return doCouncilRoomEffect(handPos, currentPlayer, state);
