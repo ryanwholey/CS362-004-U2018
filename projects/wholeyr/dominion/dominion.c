@@ -784,19 +784,22 @@ int DoAdventurerEffect(int handPos, int currentPlayer, struct gameState *state) 
 /**
  * Play Smithy Card
  * Given a players hand position, a player id and a game state, this function will
- * act out the effect of that player using a smithy card
+ * act out the smithy card on that player, given that they have a smithy at that position
  */
-int doSmithyEffect(int handPos, int currentPlayer, struct gameState *state) {
+int DoSmithyEffect(int handPos, int currentPlayer, struct gameState *state) {
   int i;
 
+  if (state->hand[currentPlayer][handPos] != smithy) {
+    return -1;
+  }
   // +3 Cards
-  for (i = 0; i <= 3; i++) {
+  for (i = 0; i < 3; i++) {
     drawCard(currentPlayer, state);
   }
 
   //discard card from hand
   discardCard(handPos, currentPlayer, state, 0);
-
+  updateCoins(currentPlayer, state, 0);
   return 0;
 }
 
@@ -1063,7 +1066,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 
     case smithy:
-      return doSmithyEffect(handPos, currentPlayer, state);
+      return DoSmithyEffect(handPos, currentPlayer, state);
 
     case village:
       return doVillageEffect(handPos, currentPlayer, state);

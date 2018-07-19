@@ -59,6 +59,10 @@ int main () {
     }
   }
   result = DoAdventurerEffect(0, player, state);
+
+  printf("* Returns 0 result when successful: ");
+  assertTrue(result == 0);
+
   printf("* Discards adventurer card when played: ");
   assertTrue(state->hand[0][0] != adventurer);
 
