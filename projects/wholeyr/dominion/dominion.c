@@ -48,6 +48,11 @@ void PrintGameState(struct gameState *state) {
   printf("COINS: %d\n", state->coins);
   printf("NUM BUYS: %d\n", state->numBuys);
 
+  printf("HAND COUNT: \n");
+  for (i = 0; i < state->numPlayers; i++) {
+    printf("  PLAYER %i: %i\n", i, state->handCount[i]);
+  }
+
   printf("HAND: \n");
   for (i = 0; i < state->numPlayers; i++) {
     printf("  PLAYER %d\n", i);
@@ -56,9 +61,9 @@ void PrintGameState(struct gameState *state) {
     }
   }
 
-  printf("HAND COUNT: \n");
+  printf("DECK COUNT: \n");
   for (i = 0; i < state->numPlayers; i++) {
-    printf("  PLAYER %i: %i\n", i, state->handCount[i]);
+    printf("  PLAYER %i: %i\n", i, state->deckCount[i]);
   }
 
   printf("DECK: \n");
@@ -69,9 +74,9 @@ void PrintGameState(struct gameState *state) {
     }
   }
 
-  printf("DECK COUNT: \n");
+  printf("DISCARD COUNT:\n");
   for (i = 0; i < state->numPlayers; i++) {
-    printf("  PLAYER %i: %i\n", i, state->deckCount[i]);
+    printf("  PLAYER %i: %i\n", i, state->discardCount[i]);
   }
 
   printf("DISCARD: \n");
@@ -86,10 +91,7 @@ void PrintGameState(struct gameState *state) {
     }
   }
 
-  printf("DISCARD COUNT:\n");
-  for (i = 0; i < state->numPlayers; i++) {
-    printf("  PLAYER %i: %i\n", i, state->discardCount[i]);
-  }
+  printf("PLAYED CARD COUNT: %i\n", state->playedCardCount);
 
   printf("PLAYED CARDS:\n");
   i = 0;
@@ -100,7 +102,6 @@ void PrintGameState(struct gameState *state) {
     printf("  none\n");
   }
 
-  printf("PLAYED CARD COUNT: %i\n", state->playedCardCount);
 
   printf("############################################\n");
 }
@@ -1075,6 +1076,11 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return doBaronEffect(choice1, currentPlayer, state);
 
     case great_hall:
+
+      if (state->hand[currentPlayer][handPos] != great_hall) {
+        return -1;
+      }
+
       //+1 Card
       drawCard(currentPlayer, state);
 
@@ -1083,6 +1089,9 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
       //discard card from hand
       discardCard(handPos, currentPlayer, state, 0);
+
+      // ensure any drawn treasures are reflected
+      updateCoins(currentPlayer, state, 0);
       return 0;
 
     case minion:
