@@ -17,7 +17,7 @@ void assertTrue(assertion) {
   }
 }
 
-// TEST ADVENTURER
+// TEST SMITHY
 
 // BUG: was able to target the <= bug I added before
 // BUG: Does not update coins

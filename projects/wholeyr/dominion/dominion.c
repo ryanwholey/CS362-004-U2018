@@ -1137,23 +1137,32 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 
     case steward:
-      if (choice1 == 1)
-	{
-	  //+2 cards
-	  drawCard(currentPlayer, state);
-	  drawCard(currentPlayer, state);
-	}
-      else if (choice1 == 2)
-	{
-	  //+2 coins
-	  state->coins = state->coins + 2;
-	}
-      else
-	{
-	  //trash 2 cards in hand
-	  discardCard(choice2, currentPlayer, state, 1);
-	  discardCard(choice3, currentPlayer, state, 1);
-	}
+      if (state->hand[currentPlayer][handPos] != steward) {
+        return -1;
+      }
+      if (choice1 == 1) {
+    	  //+2 cards
+        drawCard(currentPlayer, state);
+        drawCard(currentPlayer, state);
+        updateCoins(currentPlayer, state, 0);
+      } else if (choice1 == 2) {
+	      //+2 coins
+        state->coins = state->coins + 2;
+      } else {
+        if (
+          choice2 == choice3 || 
+          choice2 >= state->handCount[currentPlayer] ||
+          choice3 >= state->handCount[currentPlayer] ||
+          choice2 == handPos || 
+          choice3 == handPos
+        ) {
+          return -1;
+        } 
+    	  //trash 2 cards in hand
+        discardCard(choice2, currentPlayer, state, 1);
+        discardCard(choice3, currentPlayer, state, 1);
+        updateCoins(currentPlayer, state, 0);
+      }
 
       //discard card from hand
       discardCard(handPos, currentPlayer, state, 0);
@@ -1397,12 +1406,15 @@ int discardCard(int handPos, int currentPlayer, struct gameState *state, int tra
 {
 
   //if card is not trashed, added to Played pile 
-  if (trashFlag < 1)
-    {
+  if (trashFlag < 1) {
       //add card to played pile
       state->playedCards[state->playedCardCount] = state->hand[currentPlayer][handPos]; 
       state->playedCardCount++;
-    }
+  } else {
+    // send to discard
+     state->discard[currentPlayer][state->discardCount[currentPlayer]] = state->hand[currentPlayer][handPos];
+     state->discardCount[currentPlayer]++;
+  }
 
   //set played card to -1
   state->hand[currentPlayer][handPos] = -1;
