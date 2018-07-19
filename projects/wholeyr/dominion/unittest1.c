@@ -31,6 +31,6 @@ int main () {
 
   // CLEANUP
   free(state);
-
+  printf("\n");
   return 0;
 }

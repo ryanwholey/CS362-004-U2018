@@ -53,11 +53,15 @@ runtests: testDrawCard
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
-unittestresults: unittest1 unittest2 unittest3
-	./unittest1 >> $(RESULTOUT) 2>&1
+unittestresults: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4
+	./unittest1 > $(RESULTOUT) 2>&1
 	./unittest2 >> $(RESULTOUT) 2>&1
 	./unittest3 >> $(RESULTOUT) 2>&1
 	./unittest4 >> $(RESULTOUT) 2>&1
+	./cardtest1 >> $(RESULTOUT) 2>&1
+	./cardtest2 >> $(RESULTOUT) 2>&1
+	./cardtest3 >> $(RESULTOUT) 2>&1
+	./cardtest4 >> $(RESULTOUT) 2>&1
 	# gcov dominion.c >> unittestresults.out
 	# cat dominion.c.gcov >> unittestresults.out
 	# gcc -o unittestresults.out unittestresults.c -g $(CFLAGS)

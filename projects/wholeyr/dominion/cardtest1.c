@@ -94,9 +94,9 @@ int main () {
   // Starts with 10 in deck, takes 5 out for hand, 
   // draws 3 cards during play adventure: 2 treasure cards
   // and the smithy placed at the top of the deck, leaving 2
-  assertTrue(state->deckCount[player] == 2);
+  assertTrue(state->deckCount[player] == 10 - 5 - 3);
   // CLEANUP
   free(state);
-
+  printf("\n");
   return 0;
 }
