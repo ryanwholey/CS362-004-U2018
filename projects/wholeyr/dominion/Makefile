@@ -33,6 +33,9 @@ unittest2: unittest2.c dominion.o rngs.o
 unittest3: unittest3.c dominion.o rngs.o
 	gcc  -o unittest3 -g  unittest3.c dominion.o rngs.o $(CFLAGS)
 
+unittest4: unittest4.c dominion.o rngs.o
+	gcc  -o unittest4 -g  unittest4.c dominion.o rngs.o $(CFLAGS)
+
 runtests: testDrawCard
 	./testDrawCard &> unittestresult.out
 	gcov dominion.c >> unittestresult.out
@@ -42,6 +45,7 @@ unittestresults: unittest1 unittest2 unittest3
 	./unittest1 >> $(RESULTOUT) 2>&1
 	./unittest2 >> $(RESULTOUT) 2>&1
 	./unittest3 >> $(RESULTOUT) 2>&1
+	./unittest4 >> $(RESULTOUT) 2>&1
 	# gcov dominion.c >> unittestresults.out
 	# cat dominion.c.gcov >> unittestresults.out
 	# gcc -o unittestresults.out unittestresults.c -g $(CFLAGS)

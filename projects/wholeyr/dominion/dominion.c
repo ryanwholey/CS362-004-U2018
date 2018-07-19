@@ -18,7 +18,7 @@ struct gameState* newGame() {
   return g;
 }
 
-void printGameState(struct gameState *state) {
+void PrintGameState(struct gameState *state) {
   printf("############################################\n");
   int i, j;
   printf("NUM PLAYERS: %d\n", state->numPlayers);
@@ -78,7 +78,7 @@ void printGameState(struct gameState *state) {
 
   printf("DISCARD: \n");
   for (i = 0; i < state->numPlayers; i++) {
-    printf("  PLAYER %i:\n");
+    printf("  PLAYER %i:\n", i);
     j = 0;
     while (state->discard[i][j] != 0) {
       printf("    %i) %i\n", j, state->discard[i][j]);
@@ -324,33 +324,28 @@ int playCard(int handPos, int choice1, int choice2, int choice3, struct gameStat
   int card;
   int coin_bonus = 0; 		//tracks coins gain from actions
 
-  //check if it is the right phase
-  if (state->phase != 0)
-    {
-      return -1;
-    }
+  //check if it is the right phase, 0 is action phase
+  if (state->phase != 0) {
+    return -1;
+  }
 
   //check if player has enough actions
-  if ( state->numActions < 1 )
-    {
-      return -1;
-    }
+  if ( state->numActions < 1 ) {
+    return -1;
+  }
 
   //get card played
   card = handCard(handPos, state);
 
-  //check if selected card is an action
-  if ( card < adventurer || card > treasure_map )
-    {
-      return -1;
-    }
+  // ensure selected card is an action
+  if ( card < adventurer || card > treasure_map ) {
+    return -1;
+  }
 
   //play card
-  if ( cardEffect(card, choice1, choice2, choice3, state, handPos, &coin_bonus) < 0 )
-    {
-      return -1;
-    }
-
+  if ( cardEffect(card, choice1, choice2, choice3, state, handPos, &coin_bonus) < 0 ) {
+    return -1;
+  }
   //reduce number of actions
   state->numActions--;
 
@@ -928,7 +923,6 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   if (nextPlayer > (state->numPlayers - 1)) {
     nextPlayer = 0;
   }
-
   //uses switch to select card and perform actions
   switch (card) {
     case adventurer:
@@ -1303,10 +1297,10 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     case embargo: 
       //+2 Coins
       state->coins = state->coins + 2;
-
       //see if selected pile is in play
       if ( state->supplyCount[choice1] == -1 )
 	{
+
 	  return -1;
 	}
 
@@ -1354,29 +1348,26 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     case treasure_map:
       //search hand for another treasure_map
       index = -1;
-      for (i = 0; i < state->handCount[currentPlayer]; i++)
-	{
-	  if (state->hand[currentPlayer][i] == treasure_map && i != handPos)
-	    {
-	      index = i;
-	      break;
-	    }
-	}
-      if (index > -1)
-	{
-	  //trash both treasure cards
-	  discardCard(handPos, currentPlayer, state, 1);
-	  discardCard(index, currentPlayer, state, 1);
-
-	  //gain 4 Gold cards
-	  for (i = 0; i < 4; i++)
-	    {
-	      gainCard(gold, state, 1, currentPlayer);
+      for (i = 0; i < state->handCount[currentPlayer]; i++) {
+        if (state->hand[currentPlayer][i] == treasure_map && i != handPos) {
+          index = i;
+          break;
+	      }
 	    }
 
-	  //return success
-	  return 1;
-	}
+      if (index > -1) {
+    	  //trash both treasure cards
+        discardCard(handPos, currentPlayer, state, 1);
+        discardCard(index, currentPlayer, state, 1);
+
+	      //gain 4 Gold cards
+	      for (i = 0; i < 4; i++) {
+          gainCard(gold, state, 1, currentPlayer);
+        }
+
+    	  //return success
+        return 1;
+      }
 
       //no second treasure_map found in hand
       return -1;
