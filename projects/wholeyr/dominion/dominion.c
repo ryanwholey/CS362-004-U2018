@@ -1145,9 +1145,11 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         drawCard(currentPlayer, state);
         drawCard(currentPlayer, state);
         updateCoins(currentPlayer, state, 0);
+        discardCard(handPos, currentPlayer, state, 0);
       } else if (choice1 == 2) {
 	      //+2 coins
         state->coins = state->coins + 2;
+        discardCard(handPos, currentPlayer, state, 0);
       } else {
         if (
           choice2 == choice3 || 
@@ -1158,14 +1160,34 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         ) {
           return -1;
         } 
-    	  //trash 2 cards in hand
-        discardCard(choice2, currentPlayer, state, 1);
-        discardCard(choice3, currentPlayer, state, 1);
+
+    	  //trash 2 cards in hand and move steward to played
+        int discardArr[] = {
+          state->hand[currentPlayer][handPos],
+          state->hand[currentPlayer][choice2],
+          state->hand[currentPlayer][choice3]
+        };
+
+        for (i = 0; i < 3; i++) {
+          int cardType = discardArr[i];
+          int trashFlag;
+          for(j = 0; j < state->handCount[currentPlayer]; j++) {
+            trashFlag = 1;
+            if (state->hand[currentPlayer][j] == cardType) {
+              if (cardType == steward) {
+                trashFlag = 0;
+              }
+              discardCard(j, currentPlayer, state, trashFlag);
+              break;
+            }
+          } 
+        }
+
         updateCoins(currentPlayer, state, 0);
       }
 
       //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
+
       return 0;
 
     case tribute:
