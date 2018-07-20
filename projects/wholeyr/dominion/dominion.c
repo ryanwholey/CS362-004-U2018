@@ -733,20 +733,12 @@ int getCost(int cardNumber)
  * using an adventurer card
  */
 int DoAdventurerEffect(int handPos, int currentPlayer, struct gameState *state) {
-  int i, z = 0;
+  int z = 0;
   int drawntreasure = 0;
   int temphand[MAX_HAND];
   int cardDrawn;
 
-  int found = 0;
-  for (i = 0; i < state->handCount[currentPlayer]; i++) {
-    if (state->hand[currentPlayer][i] == adventurer) {
-      found = 1;
-      break;
-    }
-  }
-
-  if (!found) {
+  if (state->hand[currentPlayer][handPos] != adventurer) {
     return -1;
   }
 

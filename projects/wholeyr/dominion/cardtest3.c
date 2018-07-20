@@ -22,7 +22,7 @@ void assertTrue(assertion) {
 // BUG: if discarding a card in middle and last card in hand,
 //    doesnt discard correct card because first discard replaces
 //    last card with -1
-// BUG: Disallow steward effect if smithy not in hand position
+// BUG: Disallow steward effect if steward not in hand position
 // BUG: discardCard does not send cards to discard pile
 int main () {
   // SETUP

@@ -62,9 +62,8 @@ unittestresults: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 car
 	./cardtest2 >> $(RESULTOUT) 2>&1
 	./cardtest3 >> $(RESULTOUT) 2>&1
 	./cardtest4 >> $(RESULTOUT) 2>&1
-	# gcov dominion.c >> unittestresults.out
-	# cat dominion.c.gcov >> unittestresults.out
-	# gcc -o unittestresults.out unittestresults.c -g $(CFLAGS)
+	gcov dominion.c >> unittestresults.out
+	cat dominion.c.gcov >> unittestresults.out
 
 
 player: player.c interface.o

@@ -16,6 +16,7 @@ void assertTrue(assertion) {
   }
 }
 
+// TEST playCard
 
 int main () {
   // SETUP
