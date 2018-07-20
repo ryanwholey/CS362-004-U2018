@@ -9,7 +9,7 @@
 #define DEBUG 0
 #define NOISY_TEST 1
 
-void assertTrue(assertion) {
+void assertTrue(int assertion) {
   if (assertion) {
     printf("PASS\n");
   } else {

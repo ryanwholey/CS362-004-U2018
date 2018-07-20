@@ -6,7 +6,7 @@
 
 #define DEBUG 0
 
-void assertTrue(assertion) {
+void assertTrue(int assertion) {
   if (assertion) {
     printf("PASS\n");
   } else {
@@ -14,7 +14,7 @@ void assertTrue(assertion) {
   }
 }
 
-void assertFalse(assertion) {
+void assertFalse(int assertion) {
   if (assertion) {
     printf("FAIL\n");
   } else {
