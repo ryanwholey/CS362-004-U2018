@@ -19,8 +19,6 @@ void assertTrue(int assertion) {
 
 // TEST SMITHY
 
-// BUG: was able to target the <= bug I added before
-// BUG: Does not update coins
 int main () {
   // SETUP
   printf("SUITE: Smithy\n");
@@ -33,6 +31,7 @@ int main () {
 
   struct gameState *state = newGame();
   initializeGame(2, k, 3, state);
+  // save deck cards so we can make sure they end up in the right place
   bottomDeck1 = state->deck[player][0];
   bottomDeck2 = state->deck[player][1];
   bottomDeck3 = state->deck[player][2];
@@ -45,6 +44,7 @@ int main () {
   result = DoSmithyEffect(0, player, state);
   assertTrue(result == -1);
 
+  // ensure first card in hand is smithy
   state->hand[player][0] = smithy;
   result = DoSmithyEffect(0, player, state);
   printf("* Should return 0 if successful: ");
@@ -54,6 +54,7 @@ int main () {
   assertTrue(state->handCount[player] == 5 - 1 + 3);
 
   printf("* Should draw the top cards from the deck into the hand: ");
+  // make sure the top deck cards make it into the hand
   assertTrue(
     state->hand[player][4] == bottomDeck5 &&
     state->hand[player][5] == bottomDeck4 &&

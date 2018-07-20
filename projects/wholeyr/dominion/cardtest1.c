@@ -42,13 +42,9 @@ int main () {
   result = DoAdventurerEffect(0, player, state);
   assertTrue(result == -1);
 
-
-  // BUG: Adventurer card not discarded
-  // BUG: Forgot to increment played card count in printgamestate
-  // BUG: Coins not updated regarding newly acquired treasure
-  // BUG: Found in printGameState, printed up to 
-  // add adventurer card to hand
-  state->hand[0][0] = adventurer;
+  // make sure first card in player hand is adventurer
+  state->hand[player][0] = adventurer;
+  // calculate number of treasures before adventurer runs
   for (i = 0; i < state->handCount[player]; i++) {
     if (
       state->hand[player][i] == copper ||
@@ -67,6 +63,7 @@ int main () {
   assertTrue(state->hand[0][0] != adventurer);
 
   printf("* Adds two treasures to players hand: ");
+    // calculate number of treasures after adventurer runs
     for (i = 0; i < state->handCount[player]; i++) {
     if (
       state->hand[player][i] == copper ||

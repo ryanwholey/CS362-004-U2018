@@ -19,8 +19,6 @@ void assertTrue(int assertion) {
 
 // TEST GREAT HALL
 
-// BUG: Does not update coins after draw card
-// BUG: Does not check to make sure handPos is great_hall
 int main () {
   // SETUP
   printf("SUITE: great_hall\n");
@@ -37,6 +35,7 @@ int main () {
   struct gameState *state = newGame();
   initializeGame(2, k, 3, state);
 
+  // save some initial game values to compare after card effect
   oldDeckCount = state->deckCount[player];
   oldHandCount = state->handCount[player];
   oldPlayedCardCount = state->playedCardCount;

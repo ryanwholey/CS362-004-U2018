@@ -19,11 +19,6 @@ void assertTrue(int assertion) {
 
 // TEST STEWARD
 
-// BUG: if discarding a card in middle and last card in hand,
-//    doesnt discard correct card because first discard replaces
-//    last card with -1
-// BUG: Disallow steward effect if steward not in hand position
-// BUG: discardCard does not send cards to discard pile
 int main () {
   // SETUP
   printf("SUITE: steward\n");
@@ -41,8 +36,9 @@ int main () {
   result = cardEffect(steward, 0, 1, 1, state, 0, 0);
   assertTrue(result == -1);
 
-  // CHOICE 1 == 1 -> DRAW 2 CARDS
+  // CHOICE1 == 1 ? -> DRAW 2 CARDS
   printf("** Choice 1: draw 2 cards **\n");
+  // make sure steward is in hand
   state->hand[player][0] = steward;
   result = cardEffect(steward, 1, 0, 0, state, 0, 0);
 
