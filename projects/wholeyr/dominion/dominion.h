@@ -130,9 +130,9 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state);
 
 // int updateCoins(int player, struct gameState *state, int bonus);
 
-void printGameState(struct gameState *state);
-
+void PrintGameState(struct gameState *state);
 int DoAdventurerEffect(int handPos, int currentPlayer, struct gameState *state);
 int DoSmithyEffect(int handPos, int currentPlayer, struct gameState *state);
+int DoCouncilRoomEffect(int handPos, int currentPlayer, struct gameState *state);
 
 #endif

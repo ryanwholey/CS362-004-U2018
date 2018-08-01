@@ -5,16 +5,77 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <math.h>
+#include "rngs.h"
 
 #define DEBUG 0
 #define NOISY_TEST 1
+#define NUM_TESTS 2000
+#define SEED 2
 
-void assertTrue(int assertion) {
-  if (assertion) {
-    printf("PASS\n");
-  } else {
-    printf("FAIL\n");
+void okay() {
+  printf(".");
+}
+
+void fail() {
+  printf("X");
+
+  if (DEBUG) {
+    // PrintGameState(state);
   }
+}
+
+
+int CheckSmithyEffect(int handPos, int player, struct gameState *state) {
+  int result, error;
+    
+  error = 0;
+
+  struct gameState os;
+  struct gameState *oldState = &os;
+
+  memcpy(oldState, state, sizeof(struct gameState));
+  result = DoSmithyEffect(handPos,  player, state);
+
+
+  // if the played card was not a smithy card, we should return -1
+  if (smithy != oldState->hand[player][handPos]) {
+    if (result == 0) {
+
+      error = 1;
+    }
+  } else {
+
+    if (result != 0) {
+      if (NOISY_TEST) {
+        printf("Smithy card did not return 0 ");
+      }
+      error = 1;
+    }
+    if (oldState->handCount[player] == state->handCount[player]) {
+      error = 1;
+    }
+
+    // ensure played smithy card makes it to the playedCardCount 
+    if (oldState->playedCardCount != state->playedCardCount - 1) {
+      error = 1;
+    }
+
+    if (state->playedCards[state->playedCardCount - 1] != smithy) {
+      error = 1;
+      if (NOISY_TEST) {
+        printf("\nfailure: playedCard %i != smithy ", state->playedCards[state->playedCardCount - 1]);
+      }
+    }
+  } 
+
+  if (error) {
+    fail();
+  } else {
+    okay();
+  }
+
+  return 0;
 }
 
 // TESTING SMITHY CARD
@@ -22,21 +83,37 @@ void assertTrue(int assertion) {
 int main () {
   // SETUP
   printf("SUITE: smithy random test\n");
-  int result;
-  int player = 0;
-  int k[10] = {adventurer, council_room, feast, gardens, mine,
-       remodel, smithy, village, baron, great_hall};
-
-  struct gameState *state = newGame();
-  initializeGame(2, k, 3, state);
 
 
-  // printf("* Returns -1 if great_hall card not at handPos: ");
-  // result = cardEffect(great_hall, 0, 0, 0, state, 0, 0);
-  // assertTrue(result == -1);
+  SelectStream(2);
+  PutSeed(SEED);
+  int n, i, player, handPos;
+  struct gameState state;
+
+  for (n = 0; n < NUM_TESTS; n++) {
+
+    for (i = 0; i < sizeof(struct gameState); i++) {
+      ((char*)&state)[i] = floor(Random() * 256);
+    }
+
+    player = floor(Random() * 2);
+    state.deckCount[player] = floor(Random() * MAX_DECK);
+    state.discardCount[player] = floor(Random() * MAX_DECK);
+    state.handCount[player] = floor(Random() * MAX_HAND);
+    state.playedCardCount = floor(Random() * 5);
+
+    handPos = floor(Random() * state.handCount[player]);
+
+    state.hand[player][handPos] = smithy;
+    // every 15 or so, use a random card that is not smithy
+    if (n % 15 == 0) {
+      state.hand[player][handPos] = floor(Random() * treasure_map);
+    }
+
+    CheckSmithyEffect(handPos, player, &state);
+  }
 
   // CLEANUP
-  free(state);
   printf("\n");
   return 0;
 }

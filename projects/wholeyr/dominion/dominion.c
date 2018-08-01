@@ -609,8 +609,9 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state) {
 int drawCard(int player, struct gameState *state)
 {	int count;
   int deckCounter;
-  if (state->deckCount[player] <= 0){//Deck is empty
 
+
+  if (state->deckCount[player] <= 0){//Deck is empty
     //Step 1 Shuffle the discard pile back into a deck
     int i;
     //Move discard to deck
@@ -782,6 +783,7 @@ int DoAdventurerEffect(int handPos, int currentPlayer, struct gameState *state) 
 int DoSmithyEffect(int handPos, int currentPlayer, struct gameState *state) {
   int i;
 
+  // printf("%i - %i\n", state->hand[currentPlayer][handPos], smithy);
   if (state->hand[currentPlayer][handPos] != smithy) {
     return -1;
   }
@@ -801,7 +803,7 @@ int DoSmithyEffect(int handPos, int currentPlayer, struct gameState *state) {
  * Given a players hand position, a player id and a game state, this function will
  * act out the effect of that player using a council room card
  */
-int doCouncilRoomEffect(int handPos, int currentPlayer, struct gameState *state) {
+int DoCouncilRoomEffect(int handPos, int currentPlayer, struct gameState *state) {
   int i;
 
   //+4 Cards
@@ -812,12 +814,12 @@ int doCouncilRoomEffect(int handPos, int currentPlayer, struct gameState *state)
   //+1 Buy
   state->numBuys++;
 
-  //Each other player draws a card
+  // //Each other player draws a card
   for (i = 0; i < state->numPlayers; i++) {
     drawCard(i, state);
   }
 
-  //put played card in played card pile
+  // //put played card in played card pile
   discardCard(handPos, currentPlayer, state, 0);
 
   return 0;
@@ -939,7 +941,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return DoAdventurerEffect(handPos, currentPlayer, state);
 
     case council_room:
-      return doCouncilRoomEffect(handPos, currentPlayer, state);
+      return DoCouncilRoomEffect(handPos, currentPlayer, state);
 
     case feast:
       //gain card with cost up to 5
@@ -1456,7 +1458,7 @@ int discardCard(int handPos, int currentPlayer, struct gameState *state, int tra
   else 	
     {
       //replace discarded card with last card in hand
-      state->hand[currentPlayer][handPos] = state->hand[currentPlayer][ (state->handCount[currentPlayer] - 1)];
+      state->hand[currentPlayer][handPos] = state->hand[currentPlayer][(state->handCount[currentPlayer] - 1)];
       //set last card to -1
       state->hand[currentPlayer][state->handCount[currentPlayer] - 1] = -1;
       //reduce number of cards in hand
