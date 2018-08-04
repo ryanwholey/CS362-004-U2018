@@ -814,12 +814,12 @@ int DoCouncilRoomEffect(int handPos, int currentPlayer, struct gameState *state)
   //+1 Buy
   state->numBuys++;
 
-  // //Each other player draws a card
+  // Each other player draws a card
   for (i = 0; i < state->numPlayers; i++) {
     drawCard(i, state);
   }
 
-  // //put played card in played card pile
+  //put played card in played card pile
   discardCard(handPos, currentPlayer, state, 0);
 
   return 0;

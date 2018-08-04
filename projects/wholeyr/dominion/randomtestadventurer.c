@@ -5,38 +5,157 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <math.h>
+#include "rngs.h"
 
 #define DEBUG 0
-#define NOISY_TEST 1
+#define NOISY_TEST 0
+#define NUM_TESTS 2000
+#define SEED 2
 
-void assertTrue(int assertion) {
-  if (assertion) {
-    printf("PASS\n");
-  } else {
-    printf("FAIL\n");
+void okay() {
+  printf(".");
+}
+
+void fail() {
+  printf("X");
+
+  if (DEBUG) {
+    // PrintGameState(state);
   }
 }
 
-// TESTING ADVENTURER CARD
+// ADVENTURER 
+
+int CheckAdventurerEffect(int handPos, int player, struct gameState *state) {
+  int result, error, j, numTreasure, oldNumTreasure;
+
+  oldNumTreasure = 0; 
+  numTreasure = 0;
+  error = 0;
+
+  struct gameState os;
+  struct gameState *oldState = &os;
+
+  memcpy(oldState, state, sizeof(struct gameState));
+  result = DoAdventurerEffect(handPos,  player, state);
+
+  // if the played card was not a adventurer card, we should return -1
+  if (adventurer != oldState->hand[player][handPos]) {
+    if (result == 0) {  
+
+      if (NOISY_TEST) {
+        printf("Non adventurer card passed, error was not received \n");
+      }
+      error = 1;
+    }
+  } else {
+    if (result != 0) {
+      if (NOISY_TEST) {
+        printf("Adventurer card did not return 0\n");
+      }
+      error = 1;
+    }
+
+    if (oldState->handCount[player] + 2 - 1 != state->handCount[player]) {
+      if (NOISY_TEST) {
+        printf("hand count should be +1 (2 for new treasure -1 for discard)\n");
+      }
+      error = 1;
+    }
+
+    for (j = 0; j < oldState->handCount[player]; j++) {
+      if (oldState->hand[player][j] == copper) {
+        oldNumTreasure++;
+      }
+    }
+
+    // check that two treasures were drawn
+    for (j = 0; j < state->handCount[player]; j++) {
+      if (state->hand[player][j] == copper) {
+        numTreasure++;
+      }
+    }
+
+    if (numTreasure < 2) {
+      if (NOISY_TEST) {
+        printf("Two treasure cards were not drawn\n");
+      }
+      error = 1;
+    }
+
+    if (oldNumTreasure + 2 != numTreasure) {
+      if (NOISY_TEST) {
+        printf("should have 2 more treasures than before the effect\n");
+      }
+      error = 1;
+    }
+
+    if (state->playedCards[state->playedCardCount - 1] != oldState->hand[player][handPos]) {
+      if (NOISY_TEST) {
+        printf("Should discard card at handPos\n");
+      }
+
+      error = 1;
+    }
+  } 
+
+  if (error) {
+    fail();
+  } else {
+    okay();
+  }
+
+  return 0;
+}
+
+// TESTING SMITHY CARD
 
 int main () {
   // SETUP
-  printf("SUITE: adventurer random tester\n");
-  int result;
-  int player = 0;
-  int k[10] = {adventurer, council_room, feast, gardens, mine,
-       remodel, smithy, village, baron, great_hall};
-
-  struct gameState *state = newGame();
-  initializeGame(2, k, 3, state);
+  printf("SUITE: adventurer random test\n");
 
 
-  // printf("* Returns -1 if great_hall card not at handPos: ");
-  // result = cardEffect(great_hall, 0, 0, 0, state, 0, 0);
-  // assertTrue(result == -1);
+  SelectStream(2);
+  PutSeed(SEED);
+  int n, i, j, randomInt, player, handPos;
+  struct gameState state;
+
+  for (n = 0; n < NUM_TESTS; n++) {
+    for (i = 0; i < sizeof(struct gameState); i++) {
+      ((char*)&state)[i] = floor(Random() * 256);
+    }
+
+    player = floor(Random() * 2);
+
+    state.deckCount[player] = floor((Random() * (MAX_DECK - 10)) + 10);
+
+    for (j = 0; j < 10; j++) {
+      randomInt = floor(Random() * state.deckCount[player]);
+      // make sure the deck has treasure in it
+      while (state.deck[player][randomInt] == copper) {
+        randomInt = floor(Random() * state.deckCount[player]);
+      }
+
+      state.deck[player][randomInt] = copper;
+    }
+
+    state.discardCount[player] = floor(Random() * MAX_DECK);
+    state.handCount[player] = floor(Random() * MAX_HAND);
+    state.playedCardCount = floor(Random() * 5);
+
+    handPos = floor(Random() * state.handCount[player]);
+
+    state.hand[player][handPos] = adventurer;
+    // every 15 or so, use a random card that is not adventurer
+    if (n % 15 == 0) {
+      state.hand[player][handPos] = floor(Random() * treasure_map);
+    }
+
+    CheckAdventurerEffect(handPos, player, &state);
+  }
 
   // CLEANUP
-  free(state);
   printf("\n");
   return 0;
 }
