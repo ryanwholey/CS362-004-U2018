@@ -8,9 +8,8 @@
 #include <math.h>
 #include "rngs.h"
 
-#define DEBUG 0
 #define NOISY_TEST 0
-#define NUM_TESTS 2000
+#define NUM_TESTS 10000
 #define SEED 2
 
 void okay() {
@@ -19,10 +18,6 @@ void okay() {
 
 void fail() {
   printf("X");
-
-  if (DEBUG) {
-    // PrintGameState(state);
-  }
 }
 
 // ADVENTURER 
@@ -150,6 +145,15 @@ int main () {
     // every 15 or so, use a random card that is not adventurer
     if (n % 15 == 0) {
       state.hand[player][handPos] = floor(Random() * treasure_map);
+    }
+
+    if (n % 20 == 0) {
+      state.deckCount[player] = 1;
+      state.discardCount[player] = 10;
+      for (j = 0; j < state.discardCount[player]; j++) {
+        state.discard[player][j] = copper;
+      }
+      state.deck[player][0] = smithy;
     }
 
     CheckAdventurerEffect(handPos, player, &state);

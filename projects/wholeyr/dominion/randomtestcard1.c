@@ -8,9 +8,8 @@
 #include <math.h>
 #include "rngs.h"
 
-#define DEBUG 0
-#define NOISY_TEST 1
-#define NUM_TESTS 2000
+#define NOISY_TEST 0
+#define NUM_TESTS 10000
 #define SEED 2
 
 void okay() {
@@ -19,10 +18,6 @@ void okay() {
 
 void fail() {
   printf("X");
-
-  if (DEBUG) {
-    // PrintGameState(state);
-  }
 }
 
 
