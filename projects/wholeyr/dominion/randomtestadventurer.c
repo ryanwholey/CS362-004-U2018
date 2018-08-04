@@ -81,7 +81,7 @@ int CheckAdventurerEffect(int handPos, int player, struct gameState *state) {
 
     if (oldNumTreasure + 2 != numTreasure) {
       if (NOISY_TEST) {
-        printf("should have 2 more treasures than before the effect\n");
+        printf("Should have 2 more treasures than before the effect\n");
       }
       error = 1;
     }
