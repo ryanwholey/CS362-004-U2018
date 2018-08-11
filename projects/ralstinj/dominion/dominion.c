@@ -1379,6 +1379,7 @@ int playMinion(struct gameState *state, int currentPlayer, int handPos, int choi
 
 int playSteward(struct gameState *state, int currentPlayer, int handPos, int choice1, int choice2, int choice3) {
 
+  int bonus = 0;
   if (state->hand[currentPlayer][handPos] != steward) {
     return -1;
   }
@@ -1393,6 +1394,7 @@ int playSteward(struct gameState *state, int currentPlayer, int handPos, int cho
 	}else if (choice2 == 1){
 		//+2 coins
 		state->coins = state->coins + 2;
+    bonus = 2;
 	}else{
 		//trash 2 cards in hand
 		discardCard(choice2, currentPlayer, state, 1);
@@ -1401,7 +1403,7 @@ int playSteward(struct gameState *state, int currentPlayer, int handPos, int cho
 
 	//discard card from hand
   discardCard(handPos, currentPlayer, state, 0);
-  updateCoins(currentPlayer, state, 0);
+  updateCoins(currentPlayer, state, bonus);
 
 	return 0;
 }

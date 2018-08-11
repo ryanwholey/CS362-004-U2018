@@ -69,8 +69,8 @@ int main () {
   printf("** Choice 2: add 2 coins **\n");
   initializeGame(2, k, 3, state);
 
-  state->hand[player][0] = steward;
-  result = playSteward(state, player, handPos, 2, 0, 0);
+  state->hand[player][handPos] = steward;
+  result = playSteward(state, player, handPos, 0, 1, 0);
 
   printf("* Adds 2 coins to state when choice2 is selected: ");
   assertTrue(state->coins == 3 + 2);
