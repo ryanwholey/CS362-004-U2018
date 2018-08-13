@@ -66,7 +66,7 @@ public class InetAddressValidator implements Serializable {
      */
     public static InetAddressValidator getInstance() {
     	// BUG: getInstance should not return null, instead it should return the instance of the validator
-	    return VALIDATOR;
+	    return null;
     }
 
     /**

@@ -170,7 +170,9 @@ public class DomainValidator implements Serializable {
 		}
 		String[] groups = domainRegex.match(domain);
 		if (groups != null && groups.length > 0) {
-			return isValidTld(groups[0]);
+			// BUG: We believe the correct response should be to return the result of whether the tld is valid
+			// instead of the negation of the response
+			return !isValidTld(groups[0]);
 		}
 		return allowLocal && hostnameRegex.isValid(domain);
 	}
